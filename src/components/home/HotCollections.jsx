@@ -82,7 +82,7 @@ const HotCollections = () => {
                 ))
             : (
               <OwlCarousel className="owl-theme" {...carouselOptions}>
-                {collections.slice(0, 4).map((collection) => (
+                {collections.slice(0, 6).map((collection) => (
                   <div
                     className="item"
                     key={collection.id}
