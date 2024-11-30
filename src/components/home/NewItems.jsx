@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import OwlCarousel from "react-owl-carousel";
@@ -11,6 +10,7 @@ import "owl.carousel/dist/assets/owl.theme.default.css";
 const NewItems = () => {
   const [newItems, setNewItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const countdownRefs = useRef([]); // Ref array for countdown DOM elements
 
   useEffect(() => {
     const fetchNewItems = async () => {
@@ -29,11 +29,39 @@ const NewItems = () => {
     fetchNewItems();
   }, []);
 
+  const calculateTimeLeft = (expiryDate) => {
+    const now = new Date().getTime();
+    const difference = expiryDate - now;
+
+    if (difference <= 0) return "Expired";
+
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
+
+  useEffect(() => {
+    if (!loading) {
+      const interval = setInterval(() => {
+        newItems.forEach((item, index) => {
+          if (item.expiryDate && countdownRefs.current[index]) {
+            countdownRefs.current[index].textContent = calculateTimeLeft(item.expiryDate);
+          }
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [loading, newItems]);
+
   const carouselOptions = {
     loop: true,
     margin: 10,
     nav: true,
-    dots: false,
+    dots: true,
+    autoplay: false,
     responsive: {
       0: { items: 1 },
       600: { items: 2 },
@@ -56,10 +84,7 @@ const NewItems = () => {
             Array(4)
               .fill(0)
               .map((_, index) => (
-                <div
-                  className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
-                  key={index}
-                >
+                <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
                   <div className="nft__item">
                     <div className="nft_wrap">
                       <Skeleton height={150} />
@@ -81,7 +106,7 @@ const NewItems = () => {
               ))
           ) : (
             <OwlCarousel className="owl-theme" {...carouselOptions}>
-              {newItems.map((item) => (
+              {newItems.map((item, index) => (
                 <div className="nft__item" key={item.id}>
                   <div className="author_list_pp">
                     <Link
@@ -93,31 +118,20 @@ const NewItems = () => {
                       <img
                         className="lazy"
                         src={item.authorImage}
-                        alt="Author"
+                        alt={`Author of ${item.title}`}
                       />
                       <i className="fa fa-check"></i>
                     </Link>
                   </div>
-                  <div className="de_countdown">hi</div>
-                  <div className="nft__item_wrap">
-                    <div className="nft__item_extra">
-                      <div className="nft__item_buttons">
-                        <button>Buy Now</button>
-                        <div className="nft__item_share">
-                          <h4>Share</h4>
-                          <a href="" target="_blank" rel="noreferrer">
-                            <i className="fa fa-facebook fa-lg"></i>
-                          </a>
-                          <a href="" target="_blank" rel="noreferrer">
-                            <i className="fa fa-twitter fa-lg"></i>
-                          </a>
-                          <a href="">
-                            <i className="fa fa-envelope fa-lg"></i>
-                          </a>
-                        </div>
-                      </div>
+                  {item.expiryDate && (
+                    <div
+                      className="de_countdown"
+                      ref={(el) => (countdownRefs.current[index] = el)}
+                    >
+                      {calculateTimeLeft(item.expiryDate)}
                     </div>
-
+                  )}
+                  <div className="nft__item_wrap">
                     <Link to={`/item-details/${item.nftId}`}>
                       <img
                         src={item.nftImage}
@@ -127,7 +141,7 @@ const NewItems = () => {
                     </Link>
                   </div>
                   <div className="nft__item_info">
-                    <Link to="/item-details">
+                    <Link to={`/item-details/${item.nftId}`}>
                       <h4>{item.title}</h4>
                     </Link>
                     <div className="nft__item_price">{item.price} ETH</div>
