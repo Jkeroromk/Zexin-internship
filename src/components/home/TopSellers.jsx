@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthorImage from "../../images/author_thumbnail.jpg";
+import axios from "axios";
 
 const TopSellers = () => {
+
+  const [Topseller, setTopseller] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const TopSellers = async () => {
+      try {
+        const res = await axios.get(
+          "https://us-central1-nft-cloud-functions.cloudfunctions.net/topSellers"
+        );
+        setTopseller(res.data);
+        console.log(res.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching new items:", err);
+        setLoading(false);
+      }
+    };
+
+    TopSellers();
+  }, []);
+
   return (
     <section id="section-popular" className="pb-5">
       <div className="container">
@@ -15,21 +38,21 @@ const TopSellers = () => {
           </div>
           <div className="col-md-12">
             <ol className="author_list">
-              {new Array(12).fill(0).map((_, index) => (
+              {Topseller.map((Sellers, index) => (
                 <li key={index}>
                   <div className="author_list_pp">
-                    <Link to="/author">
+                  <Link to={`/author/${Sellers.id}`}>
                       <img
                         className="lazy pp-author"
-                        src={AuthorImage}
+                        src={Sellers.authorImage}
                         alt=""
                       />
                       <i className="fa fa-check"></i>
                     </Link>
                   </div>
                   <div className="author_list_info">
-                    <Link to="/author">Monica Lucas</Link>
-                    <span>2.1 ETH</span>
+                    <Link to="/author">{Sellers.authorName}</Link>
+                    <span>{Sellers.price} ETH</span>
                   </div>
                 </li>
               ))}
