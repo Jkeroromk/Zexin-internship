@@ -59,11 +59,9 @@ const HotCollections = () => {
                     key={index}
                   >
                     <div className="nft_coll">
-                      {/* NFT Image Placeholder */}
                       <div className="nft_wrap">
                         <Skeleton height={150} />
                       </div>
-                      {/* Author Image Placeholder */}
                       <div className="nft_coll_pp">
                         <Skeleton
                           circle
@@ -72,7 +70,6 @@ const HotCollections = () => {
                           style={{ margin: "0 auto" }}
                         />
                       </div>
-                      {/* Collection Info Placeholder */}
                       <div className="nft_coll_info">
                         <Skeleton height={20} width="80%" />
                         <Skeleton height={15} width="60%" style={{ marginTop: 5 }} />
@@ -88,7 +85,6 @@ const HotCollections = () => {
                     key={collection.id}
                   >
                     <div className="nft_coll">
-                      {/* NFT Image */}
                       <div className="nft_wrap">
                         <Link to="/item-details">
                           <img
@@ -98,7 +94,6 @@ const HotCollections = () => {
                           />
                         </Link>
                       </div>
-                      {/* Author Image */}
                       <div className="nft_coll_pp">
                         <Link to="/author">
                           <img
@@ -109,7 +104,6 @@ const HotCollections = () => {
                         </Link>
                         <i className="fa fa-check"></i>
                       </div>
-                      {/* Collection Info */}
                       <div className="nft_coll_info">
                         <Link to="/explore">
                           <h4>{collection.title}</h4>

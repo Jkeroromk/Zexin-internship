@@ -10,7 +10,7 @@ import "owl.carousel/dist/assets/owl.theme.default.css";
 const NewItems = () => {
   const [newItems, setNewItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const countdownRefs = useRef([]); // Ref array for countdown DOM elements
+  const countdownRefs = useRef([]);
 
   useEffect(() => {
     const fetchNewItems = async () => {
