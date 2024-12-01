@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Skeleton from "react-loading-skeleton";
@@ -6,26 +6,53 @@ import Skeleton from "react-loading-skeleton";
 const ExploreItems = () => {
   const [explore, setExplore] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visibleItems, setVisibleItems] = useState(8); 
-  const [sortBy, setSortBy] = useState(""); 
+  const [visibleItems, setVisibleItems] = useState(8);
+  const [sortBy, setSortBy] = useState("");
+  const countdownRefs = useRef({});
+
+  const calculateTimeLeft = (expiryDate) => {
+    const now = new Date().getTime();
+    const difference = expiryDate - now;
+
+    if (difference <= 0) return "Expired";
+
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
 
   useEffect(() => {
-    const Explore = async () => {
+    const fetchExploreItems = async () => {
       try {
         const res = await axios.get(
           "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore"
         );
         setExplore(res.data);
-        console.log(res.data);
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching new items:", err);
+        console.error("Error fetching explore items:", err);
         setLoading(false);
       }
     };
 
-    Explore();
+    fetchExploreItems();
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      const interval = setInterval(() => {
+        explore.forEach((item) => {
+          if (item.expiryDate && countdownRefs.current[item.id]) {
+            countdownRefs.current[item.id].textContent = calculateTimeLeft(item.expiryDate);
+          }
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [loading, explore]);
 
   const handleLoadMore = () => {
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 4);
@@ -75,12 +102,8 @@ const ExploreItems = () => {
                   />
                 </div>
                 <div className="nft_coll_info">
-                  <Skeleton height={20} width="80%" />{" "}
-                  <Skeleton
-                    height={15}
-                    width="60%"
-                    style={{ marginTop: 5 }}
-                  />{" "}
+                  <Skeleton height={20} width="80%" />
+                  <Skeleton height={15} width="60%" style={{ marginTop: 5 }} />
                 </div>
               </div>
             </div>
@@ -89,9 +112,9 @@ const ExploreItems = () => {
       ) : (
         sortedItems()
           .slice(0, visibleItems)
-          .map((items, index) => (
+          .map((item) => (
             <div
-              key={index}
+              key={item.id}
               className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12"
               style={{ display: "block", backgroundSize: "cover" }}
             >
@@ -102,33 +125,26 @@ const ExploreItems = () => {
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                   >
-                    <img className="lazy" src={items.authorImage} alt="" />
+                    <img className="lazy" src={item.authorImage} alt="" />
                     <i className="fa fa-check"></i>
                   </Link>
                 </div>
-                <div className="de_countdown">5h 30m 32s</div>
-
-                <div className="nft__item_wrap">
-                  <div className="nft__item_extra">
-                    <div className="nft__item_buttons">
-                      <button>Buy Now</button>
-                      <div className="nft__item_share">
-                        <h4>Share</h4>
-                        <a href="" target="_blank" rel="noreferrer">
-                          <i className="fa fa-facebook fa-lg"></i>
-                        </a>
-                        <a href="" target="_blank" rel="noreferrer">
-                          <i className="fa fa-twitter fa-lg"></i>
-                        </a>
-                        <a href="">
-                          <i className="fa fa-envelope fa-lg"></i>
-                        </a>
-                      </div>
-                    </div>
+                {item.expiryDate && (
+                  <div
+                    className="de_countdown"
+                    ref={(el) => {
+                      if (el) {
+                        countdownRefs.current[item.id] = el;
+                      }
+                    }}
+                  >
+                    {calculateTimeLeft(item.expiryDate)}
                   </div>
+                )}
+                <div className="nft__item_wrap">
                   <Link to="/item-details">
                     <img
-                      src={items.nftImage}
+                      src={item.nftImage}
                       className="lazy nft__item_preview"
                       alt=""
                     />
@@ -136,12 +152,12 @@ const ExploreItems = () => {
                 </div>
                 <div className="nft__item_info">
                   <Link to="/item-details">
-                    <h4>{items.title}</h4>
+                    <h4>{item.title}</h4>
                   </Link>
-                  <div className="nft__item_price">{items.price} ETH</div>
+                  <div className="nft__item_price">{item.price} ETH</div>
                   <div className="nft__item_like">
                     <i className="fa fa-heart"></i>
-                    <span>{items.likes}</span>
+                    <span>{item.likes}</span>
                   </div>
                 </div>
               </div>
