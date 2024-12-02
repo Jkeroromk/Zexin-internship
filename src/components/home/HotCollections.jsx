@@ -52,31 +52,31 @@ const HotCollections = () => {
           </div>
           {loading
             ? Array(4)
-                .fill(0)
-                .map((_, index) => (
-                  <div
-                    className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
-                    key={index}
-                  >
-                    <div className="nft_coll">
-                      <div className="nft_wrap">
-                        <Skeleton height={150} />
-                      </div>
-                      <div className="nft_coll_pp">
-                        <Skeleton
-                          circle
-                          height={50}
-                          width={50}
-                          style={{ margin: "0 auto" }}
-                        />
-                      </div>
-                      <div className="nft_coll_info">
-                        <Skeleton height={20} width="80%" />
-                        <Skeleton height={15} width="60%" style={{ marginTop: 5 }} />
-                      </div>
+              .fill(0)
+              .map((_, index) => (
+                <div
+                  className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
+                  key={index}
+                >
+                  <div className="nft_coll">
+                    <div className="nft_wrap">
+                      <Skeleton height={150} />
+                    </div>
+                    <div className="nft_coll_pp">
+                      <Skeleton
+                        circle
+                        height={50}
+                        width={50}
+                        style={{ margin: "0 auto" }}
+                      />
+                    </div>
+                    <div className="nft_coll_info">
+                      <Skeleton height={20} width="80%" />
+                      <Skeleton height={15} width="60%" style={{ marginTop: 5 }} />
                     </div>
                   </div>
-                ))
+                </div>
+              ))
             : (
               <OwlCarousel className="owl-theme" {...carouselOptions}>
                 {collections.slice(0, 6).map((collection) => (
@@ -95,11 +95,11 @@ const HotCollections = () => {
                         </Link>
                       </div>
                       <div className="nft_coll_pp">
-                        <Link to="/author">
+                        <Link to={`/author/${collection.authorId}`}>
                           <img
                             className="lazy pp-coll"
                             src={collection.authorImage}
-                            alt=""
+                            alt="Author Thumbnail"
                           />
                         </Link>
                         <i className="fa fa-check"></i>
