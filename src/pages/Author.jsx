@@ -9,8 +9,8 @@ const Author = () => {
   const { authorId } = useParams();
   const [authorData, setAuthorData] = useState();
   const [loading, setLoading] = useState(true);
-  const [isFollowing, setIsFollowing] = useState(false); // Tracks follow/unfollow state
-
+  const [isFollowing, setIsFollowing] = useState(false); 
+  
   useEffect(() => {
     const fetchAuthorData = async () => {
       try {
