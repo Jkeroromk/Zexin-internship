@@ -82,7 +82,15 @@ const Author = () => {
                       ) : (
                         <img src={authorData.authorImage} alt="" />
                       )}
-                      <i className="fa fa-check"></i>
+                      {loading ? (
+                        <Skeleton
+                          width={20}
+                          height={20}
+                          style={{ marginTop: "-1.5rem", marginLeft: "-0.5rem" }}
+                        />
+                      ) : (
+                        <i className="fa fa-check"></i>
+                      )}
                       <div className="profile_name">
                         <h4>
                           {loading ? (
