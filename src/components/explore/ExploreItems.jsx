@@ -16,7 +16,9 @@ const ExploreItems = () => {
 
     if (difference <= 0) return "Expired";
 
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const hours = Math.floor(
+      (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
@@ -45,7 +47,9 @@ const ExploreItems = () => {
       const interval = setInterval(() => {
         explore.forEach((item) => {
           if (item.expiryDate && countdownRefs.current[item.id]) {
-            countdownRefs.current[item.id].textContent = calculateTimeLeft(item.expiryDate);
+            countdownRefs.current[item.id].textContent = calculateTimeLeft(
+              item.expiryDate
+            );
           }
         });
       }, 1000);
@@ -142,7 +146,7 @@ const ExploreItems = () => {
                   </div>
                 )}
                 <div className="nft__item_wrap">
-                  <Link to="/item-details">
+                  <Link to={`/item-details/${item.nftId}`}>
                     <img
                       src={item.nftImage}
                       className="lazy nft__item_preview"
@@ -151,7 +155,7 @@ const ExploreItems = () => {
                   </Link>
                 </div>
                 <div className="nft__item_info">
-                  <Link to="/item-details">
+                  <Link to={`/item-details/${item.nftId}`}>
                     <h4>{item.title}</h4>
                   </Link>
                   <div className="nft__item_price">{item.price} ETH</div>

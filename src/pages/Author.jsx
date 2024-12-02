@@ -12,6 +12,7 @@ const Author = () => {
   const [isFollowing, setIsFollowing] = useState(false); 
   
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchAuthorData = async () => {
       try {
         const response = await axios.get(
