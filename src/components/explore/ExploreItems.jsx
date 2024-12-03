@@ -133,18 +133,18 @@ const ExploreItems = () => {
                     <i className="fa fa-check"></i>
                   </Link>
                 </div>
-                {item.expiryDate && (
-                  <div
-                    className="de_countdown"
-                    ref={(el) => {
-                      if (el) {
-                        countdownRefs.current[item.id] = el;
-                      }
-                    }}
-                  >
-                    {calculateTimeLeft(item.expiryDate)}
-                  </div>
-                )}
+                <div
+                  className="de_countdown"
+                  ref={(el) => {
+                    if (el) {
+                      countdownRefs.current[item.id] = el;
+                    }
+                  }}
+                >
+                  {item.expiryDate
+                    ? calculateTimeLeft(item.expiryDate)
+                    : "Expired"}
+                </div>
                 <div className="nft__item_wrap">
                   <Link to={`/item-details/${item.nftId}`}>
                     <img

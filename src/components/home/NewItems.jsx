@@ -35,7 +35,9 @@ const NewItems = () => {
 
     if (difference <= 0) return "Expired";
 
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const hours = Math.floor(
+      (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
@@ -47,7 +49,9 @@ const NewItems = () => {
       const interval = setInterval(() => {
         newItems.forEach((item, index) => {
           if (item.expiryDate && countdownRefs.current[index]) {
-            countdownRefs.current[index].textContent = calculateTimeLeft(item.expiryDate);
+            countdownRefs.current[index].textContent = calculateTimeLeft(
+              item.expiryDate
+            );
           }
         });
       }, 1000);
@@ -72,7 +76,12 @@ const NewItems = () => {
 
   return (
     <section id="section-items" className="no-bottom">
-      <div data-aos="fade-right" data-aos-duration="1500" data-aos-easing="ease-in" className="container">
+      <div
+        data-aos="fade-right"
+        data-aos-duration="1500"
+        data-aos-easing="ease-in"
+        className="container"
+      >
         <div className="row">
           <div className="col-lg-12">
             <div className="text-center">
@@ -84,7 +93,10 @@ const NewItems = () => {
             Array(4)
               .fill(0)
               .map((_, index) => (
-                <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
+                <div
+                  className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
+                  key={index}
+                >
                   <div className="nft__item">
                     <div className="nft_wrap">
                       <Skeleton height={150} />
@@ -99,7 +111,11 @@ const NewItems = () => {
                     </div>
                     <div className="nft__item_info">
                       <Skeleton height={20} width="80%" />
-                      <Skeleton height={15} width="60%" style={{ marginTop: 5 }} />
+                      <Skeleton
+                        height={15}
+                        width="60%"
+                        style={{ marginTop: 5 }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -123,13 +139,15 @@ const NewItems = () => {
                       <i className="fa fa-check"></i>
                     </Link>
                   </div>
-                  {item.expiryDate && (
+                  {item.expiryDate ? (
                     <div
                       className="de_countdown"
                       ref={(el) => (countdownRefs.current[index] = el)}
                     >
                       {calculateTimeLeft(item.expiryDate)}
                     </div>
+                  ) : (
+                    <div className="de_countdown">Expired</div>
                   )}
                   <div className="nft__item_wrap">
                     <Link to={`/item-details/${item.nftId}`}>
